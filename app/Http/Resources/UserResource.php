@@ -17,7 +17,7 @@ class UserResource extends JsonResource
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'balance' => $this->balance,
+            'balance' => $this->balance ? $this->balance : 0,
             "avatar_url" => $this->avatar_url ? $this->avatar_url : "",
             'phone' => $this->phone,
             'created_at'=> $this->created_at->format('d-m-Y')
