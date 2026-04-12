@@ -7,7 +7,6 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -25,9 +24,10 @@ class UserController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            "message" => "Inscription reussie !",
             'user' => UserResource::make($user),
             'token' => $token,
-        ]);
+        ],201);
     }
 
     /**
@@ -39,17 +39,31 @@ class UserController extends Controller
     public function login(LoginRequest $request)
     {
         $request->validated();
-        if(Auth::attempt($request->validated())){
+        if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             $token = $user->createToken("auth_token")->plainTextToken;
             return response()->json([
                 'user' => UserResource::make($user),
                 'token' => $token,
+                'message' => "Connexion reussie"
             ], 200);
         }
 
         return response()->json([
             'message' => "Email ou mot de passe incorrect"
         ], 401);
+    }
+
+    /**
+     * Fonction pour afficher les informations d'un utilisateur connecte via Sanctum
+     *
+     * @return void
+     */
+    public function me()
+    {
+        $user = Auth::user();
+        return response()->json([
+            'user' => UserResource::make($user)
+        ]);
     }
 }
