@@ -3,25 +3,38 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Transactions\TransactionRequest;
+use App\Http\Resources\Transaction\TransactionResource;
+use App\Http\Resources\Transaction\TransactionsHistoryResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-        public function send(Request $request)
+
+    public function add(Request $request)
     {
         // Validation des données
         $request->validate([
-            'receiver_id' => 'required|exists:users,id',
             'amount' => 'required|integer|min:1',
-            'reference' => 'required|string|max:255',
-            'description' => 'nullable|string',
         ]);
 
+        $user = Auth::user();
+        $user->balance += $request->amount;
+        $user->save();
+
+        return response()->json(['message' => 'Argent ajouté avec succès', 'balance' => $user->balance], 200);
+    }
+
+    public function send(TransactionRequest $request)
+    {
+        // Validation des données
+        $request->validated();
+
         $sender = Auth::user();
-        $receiver = User::find($request->receiver_id);
+        $receiver = User::where('phone', $request->receiver_phone)->first();
 
         // Vérification du solde du sender
         if ($sender->balance < $request->amount) {
@@ -44,7 +57,7 @@ class TransactionController extends Controller
         $sender->save();
         $receiver->save();
 
-        return response()->json(['message' => 'Transaction réussie', 'transaction' => $transaction], 201);
+        return response()->json(['message' => 'Transaction réussie', 'transaction' => TransactionResource::make($transaction)], 201);
     }
 
     public function history()
@@ -56,6 +69,6 @@ class TransactionController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return response()->json(['transactions' => $transactions], 200);
+        return response()->json(['transactions' => TransactionsHistoryResource::collection($transactions)], 200);
     }
 }

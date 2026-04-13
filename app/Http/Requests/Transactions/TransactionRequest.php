@@ -22,7 +22,7 @@ class TransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'receiver_id' => 'required|exists:users,id',
+            'receiver_phone' => 'required|exists:users,phone',
             'amount' => 'required|integer|min:1',
             'reference' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -32,8 +32,8 @@ class TransactionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'receiver_id.required' => 'Le champ receiver_id est requis.',
-            'receiver_id.exists' => 'Le receiver_id doit correspondre à un utilisateur existant.',
+            'receiver_phone.required' => 'Le champ receiver_phone est requis.',
+            'receiver_phone.exists' => 'Le numéro de téléphone doit correspondre à un utilisateur existant.',
             'amount.required' => 'Le champ amount est requis.',
             'amount.integer' => 'Le champ amount doit être un entier.',
             'amount.min' => 'Le montant doit être au moins de 1.',
