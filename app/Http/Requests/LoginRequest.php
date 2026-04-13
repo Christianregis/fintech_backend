@@ -27,4 +27,16 @@ class LoginRequest extends FormRequest
             "password" => "string|required",
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'email.string' => 'Le champ email doit être une chaîne de caractères.',
+            'email.max' => 'Le champ email ne doit pas dépasser 255 caractères.',
+            'email.email' => 'Le champ email doit être une adresse email valide.',
+            'email.required' => 'Le champ email est requis.',
+            'password.string' => 'Le champ password doit être une chaîne de caractères.',
+            'password.required' => 'Le champ password est requis.',
+        ];
+    }
 }
