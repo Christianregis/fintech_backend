@@ -36,6 +36,9 @@ class TransactionController extends Controller
         $sender = Auth::user();
         $receiver = User::where('phone', $request->receiver_phone)->first();
 
+        if ($sender->id == $receiver->id) {
+            return response()->json(['message' => 'Vous ne pourvez pas vous envoyer de l\'argent a vous meme.'], 400);
+        }
         // Vérification du solde du sender
         if ($sender->balance < $request->amount) {
             return response()->json(['message' => 'Solde insuffisant'], 400);

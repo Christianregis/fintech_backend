@@ -15,10 +15,14 @@ class TransactionsHistoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'sender_id' => $this->sender_id,
+            'receiver_id' => $this->receiver_id,
             'amount' => $this->amount,
             'reference' => $this->reference,
-            'sender_name' => $this->sender ? $this->sender->name : 'Utilisateur supprimé',
-            'receiver_name' => $this->receiver ? $this->receiver->name : 'Utilisateur supprimé',
+            'sender_name' => $this->sender->name,
+            'receiver_name' => $this->receiver->name,
+            'receiver_phone' => $this->receiver->phone,
+            'sender_phone' => $this->sender->phone,
             'description' => $this->description ? $this->description : 'Aucune description',
             'created_at' => $this->created_at->format('d-m-Y : H:i'),
         ];

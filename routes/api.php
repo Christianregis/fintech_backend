@@ -21,4 +21,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     // Route pour recharger son compte
     Route::post("/transactions/add", [TransactionController::class, 'add'])->middleware("auth:sanctum");
+
+    // Route pour se déconnecter
+    Route::post('/logout', [UserController::class, 'logout'])->middleware("auth:sanctum");
 });

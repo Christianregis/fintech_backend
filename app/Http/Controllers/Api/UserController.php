@@ -66,4 +66,14 @@ class UserController extends Controller
             'user' => UserResource::make($user)
         ]);
     }
+
+    public function logout()
+    {
+        $user = Auth::user();
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message' => "Déconnexion réussie"
+        ], 200);
+    }
 }
